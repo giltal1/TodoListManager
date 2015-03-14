@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TodoListManager</string>
+    <string name="action_add">Add</string>
+
+    <string name="new_item_hint">I want to...</string>
+
+</resources>
