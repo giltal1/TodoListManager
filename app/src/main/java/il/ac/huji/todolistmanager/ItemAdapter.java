@@ -11,9 +11,6 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.zip.Inflater;
 
-/**
- * Created by Gil on 14/03/2015.
- */
 public class ItemAdapter extends ArrayAdapter<String> {
 
     public ItemAdapter(Context context, int resource, List<String> tasks) {
@@ -29,7 +26,7 @@ public class ItemAdapter extends ArrayAdapter<String> {
         tv.setTextColor(color);
         tv.setTextSize(30);
         String item = getItem(position);
-        tv.setText(item.toString());
+        tv.setText(item);
         return view;
     }
 }
