@@ -8,12 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.zip.Inflater;
 
-public class ItemAdapter extends ArrayAdapter<String> {
+public class ItemAdapter extends ArrayAdapter<Item> {
 
-    public ItemAdapter(Context context, int resource, List<String> tasks) {
+    private DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+
+    public ItemAdapter(Context context, int resource, List<Item> tasks) {
         super(context, resource, tasks);
     }
 
@@ -21,12 +25,24 @@ public class ItemAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.activity_todo_list_manager_list_item, null);
-        TextView tv = (TextView) view.findViewById(R.id.list_todo_item);
-        int color = position % 2 == 0 ? Color.RED : Color.BLUE;
-        tv.setTextColor(color);
-        tv.setTextSize(30);
-        String item = getItem(position);
-        tv.setText(item);
+
+        TextView title = (TextView) view.findViewById(R.id.txtTodoTitle);
+        TextView date = (TextView) view.findViewById(R.id.txtTodoDueDate);
+        Item item = getItem(position);
+
+        title.setText(item.getTitle());
+        if (item.getDate() != null) {
+            date.setText(df.format(item.getDate()));
+            Date today = new Date();
+            if (item.getDate().getTime() < today.getTime()) {
+                date.setTextColor(Color.RED);
+                title.setTextColor(Color.RED);
+            }
+        }
+        else {
+            date.setText("No due date");
+        }
+
         return view;
     }
 }

@@ -1,7 +1,17 @@
 <resources>
-    <string name="app_name">TodoListManager</string>
+    <string name="app_name">Todo List Manager</string>
     <string name="action_add">Add</string>
-
+    
+    <string name="add_new_todo_item">Add New Item</string>
     <string name="new_item_hint">I want to...</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="menu_delete">Delete Item</string>
+    <string name="menu_call">Call </string>
+    <string name="menu_message">Message </string>
+    <string name="menu_mail">Mail </string>
+
+    <string name="empty_text_item">You must enter a text description</string>
 
 </resources>
