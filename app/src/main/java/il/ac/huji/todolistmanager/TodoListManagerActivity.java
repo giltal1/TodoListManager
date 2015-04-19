@@ -16,6 +16,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +39,15 @@ public class TodoListManagerActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list_manager);
+
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "llO6krvu4dzKWQcEP6L2MaPzVkgriqHL1qcsS1Tb",
+                               "xH65y4XnCwIdyBxUFDgmupMELyLDjF4ERWjziZTc");
+
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
 
         dataSource = new ItemDataSource(this);
         dataSource.open();
