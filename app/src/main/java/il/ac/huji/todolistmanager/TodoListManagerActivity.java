@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,19 +27,22 @@ public class TodoListManagerActivity extends ActionBarActivity {
     private final String MAIL = "mailto:";
 
     final Context context = this;
+    private ItemDataSource dataSource;
     private List<Item> items;
     private ArrayAdapter<Item> adapter;
     private ListView itemsList;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list_manager);
 
+        dataSource = new ItemDataSource(this);
+        dataSource.open();
+        items = dataSource.getAllItems();
+
         //ListView
         itemsList = (ListView) findViewById(R.id.lstTodoItems);
-        items = new ArrayList<Item>();
         adapter = new ItemAdapter(this, android.R.layout.simple_list_item_1, items);
         itemsList.setAdapter(adapter);
         registerForContextMenu(itemsList);
@@ -76,8 +78,8 @@ public class TodoListManagerActivity extends ActionBarActivity {
 
         }
         else if(item.getTitle().startsWith(mailPrefix)) {
-            MenuItem messageItem = menu.findItem(R.id.menuItemMail);
-            messageItem.setTitle(item.getTitle());
+            MenuItem mailItem = menu.findItem(R.id.menuItemMail);
+            mailItem.setTitle(item.getTitle());
             menu.removeItem(R.id.menuItemCall);
             menu.removeItem(R.id.menuItemMessage);
         }
@@ -107,6 +109,7 @@ public class TodoListManagerActivity extends ActionBarActivity {
     }
 
     private boolean removeItem(Item item) {
+        dataSource.deleteItem(item);
         adapter.remove(item);
         adapter.notifyDataSetChanged();
         return true;
@@ -165,9 +168,16 @@ public class TodoListManagerActivity extends ActionBarActivity {
                 String title = data.getStringExtra("title");
                 Date date = (Date) data.getExtras().get("date");
                 Item item = new Item(title, date);
+                dataSource.insertItem(item);
                 adapter.insert(item, 0);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onPause();
+        dataSource.close();
     }
 
 }
