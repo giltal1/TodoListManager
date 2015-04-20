@@ -13,5 +13,8 @@
     <string name="menu_mail">Mail </string>
 
     <string name="empty_text_item">You must enter a text description</string>
+    
+    <string name="parseAppID">llO6krvu4dzKWQcEP6L2MaPzVkgriqHL1qcsS1Tb</string>
+    <string name="parseClientID">xH65y4XnCwIdyBxUFDgmupMELyLDjF4ERWjziZTc</string>
 
 </resources>

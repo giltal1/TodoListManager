@@ -4,16 +4,21 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by ulamadm on 19/04/2015.
+ * Created by Gil on 19/04/2015.
  */
 public class ItemDataSource {
+
+    private final String FORMAT = "dd/MM/yyyy";
 
     private SQLiteDatabase db;
     private MySQLiteHelper dbHelper;
@@ -36,24 +41,35 @@ public class ItemDataSource {
     public void insertItem(Item item) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.KEY_DESCRIPTION, item.getTitle());
-
-        long valueDate = item.getDate() != null ? item.getDate().getTime(): null;
-        values.put(MySQLiteHelper.KEY_DATE, valueDate);
-
+        values.put(MySQLiteHelper.KEY_DATE, item.getDateAsString());
         db.insert(MySQLiteHelper.TABLE_NAME, null, values);
     }
 
-    // Getting single item
-    public Item getItem(int id) {
-        Cursor cursor = db.query(MySQLiteHelper.TABLE_NAME, allColumns,
-                MySQLiteHelper.KEY_ID + " = " + id, null, null, null, null);
-        cursor.moveToFirst();
-        String title = cursor.getString(1);
-        Date date = !cursor.isNull(2) ? new Date(cursor.getLong(2)) : null;
-        Item item = new Item(title, date);
-        cursor.close();
-        return item;
+    // Deleting item
+    public void deleteItem(Item item) {
+        db.delete(MySQLiteHelper.TABLE_NAME, MySQLiteHelper.KEY_DESCRIPTION + " = ?",
+                new String[] { item.getTitle() });
     }
+
+    // Getting single item
+//    public Item getItem(int id) {
+//        Cursor cursor = db.query(MySQLiteHelper.TABLE_NAME, allColumns,
+//                MySQLiteHelper.KEY_ID + " = " + id, null, null, null, null);
+//        cursor.moveToFirst();
+//        String title = cursor.getString(1);
+//        Date date = null;
+//        String dateAsString = !cursor.isNull(2) ? cursor.getString(2) : null;
+//        DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+//        try {
+//            date = formatter.parse(dateAsString);
+//        }
+//        catch (ParseException e) {
+//            Log.e("ItemDataSource", "can't convert string to date", e);
+//        }
+//        Item item = new Item(title, date);
+//        cursor.close();
+//        return item;
+//    }
 
     // Getting all items
     public List<Item> getAllItems() {
@@ -65,9 +81,16 @@ public class ItemDataSource {
         if (cursor.moveToFirst()) {
             do {
                 String title = cursor.getString(1);
-                Date date = !cursor.isNull(2) ? new Date(cursor.getLong(2)) : null;
+                Date date = null;
+                String dateAsString = !cursor.isNull(2) ? cursor.getString(2) : null;
+                DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+                try {
+                    date = formatter.parse(dateAsString);
+                }
+                catch (ParseException e) {
+                    Log.e("ItemDataSource", "can't convert string to date", e);
+                }
                 Item item = new Item(title, date);
-
                 // Adding contact to list
                 itemsList.add(item);
             } while (cursor.moveToNext());
@@ -90,22 +113,4 @@ public class ItemDataSource {
         return cursor.getCount();
     }
 
-//    // Updating single item
-//    public int updateItem(Item item) {
-//        ContentValues values = new ContentValues();
-//        values.put(MySQLiteHelper.KEY_DESCRIPTION, item.getTitle());
-//        long valueDate = item.getDate() != null ? item.getDate().getTime(): null;
-//        values.put(MySQLiteHelper.KEY_DATE, valueDate);
-//
-//        // updating row
-//        return db.update(MySQLiteHelper.TABLE_NAME, values, MySQLiteHelper.KEY_DESCRIPTION + " = ?",
-//                new String[] { item.getTitle() });
-//    }
-
-    // Deleting single contact
-    public void deleteItem(Item item) {
-        db.delete(MySQLiteHelper.TABLE_NAME, MySQLiteHelper.KEY_DESCRIPTION + " = ?",
-                new String[] { item.getTitle() });
-        //db.close();
-    }
 }

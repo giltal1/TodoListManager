@@ -16,9 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import com.parse.Parse;
-import com.parse.ParseObject;
-
 import java.util.Date;
 import java.util.List;
 
@@ -34,21 +31,17 @@ public class TodoListManagerActivity extends ActionBarActivity {
     private List<Item> items;
     private ArrayAdapter<Item> adapter;
     private ListView itemsList;
+    private ParseDB parse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list_manager);
 
-        // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "llO6krvu4dzKWQcEP6L2MaPzVkgriqHL1qcsS1Tb",
-                               "xH65y4XnCwIdyBxUFDgmupMELyLDjF4ERWjziZTc");
+        //Init parse
+        parse = new ParseDB(context);
 
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
-
+        //Open DB
         dataSource = new ItemDataSource(this);
         dataSource.open();
         items = dataSource.getAllItems();
@@ -121,6 +114,7 @@ public class TodoListManagerActivity extends ActionBarActivity {
     }
 
     private boolean removeItem(Item item) {
+        parse.delete(item);
         dataSource.deleteItem(item);
         adapter.remove(item);
         adapter.notifyDataSetChanged();
@@ -180,6 +174,7 @@ public class TodoListManagerActivity extends ActionBarActivity {
                 String title = data.getStringExtra("title");
                 Date date = (Date) data.getExtras().get("date");
                 Item item = new Item(title, date);
+                parse.insert(item);
                 dataSource.insertItem(item);
                 adapter.insert(item, 0);
             }

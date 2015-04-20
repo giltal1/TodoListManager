@@ -28,7 +28,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_NAME + " (" +
                     KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     KEY_DESCRIPTION + " TEXT NOT NULL, " +
-                    KEY_DATE + " INTEGER);";
+                    KEY_DATE + " TEXT);";
 
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
