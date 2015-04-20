@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.Parse;
-import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -22,7 +21,6 @@ public class ParseDB {
     private final String FORMAT = "dd/MM/yyyy";
 
     public ParseDB(Context context) {
-        Parse.enableLocalDatastore(context);
         Resources resources = context.getResources();
         String appID = resources.getString(R.string.parseAppID);
         String clientID = resources.getString(R.string.parseClientID);
@@ -31,11 +29,9 @@ public class ParseDB {
     }
 
     public void insert(Item item) {
-        ParseObject parseItem = new ParseObject("todo");
+        ParseObject parseItem = new ParseObject("Todo");
         parseItem.put("title", item.getTitle());
         parseItem.put("date", item.getDateAsString());
-
-        //parseItem.setACL(new ParseACL(ParseUser.getCurrentUser()));
         parseItem.saveInBackground();
     }
 
@@ -44,12 +40,12 @@ public class ParseDB {
         query.whereEqualTo("title", item.getTitle());
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> todoList, ParseException e) {
-                if (e == null && todoList.size() > 0) {
+                if (e == null) {
                     for (ParseObject object : todoList) {
                         object.deleteInBackground();
                     }
                 } else {
-                    Log.e("ParseDB", "Find item to delete failed", e);
+                    Log.e("ParseDB", "Find item to delete failed. " + e.getMessage());
                 }
             }
         });
