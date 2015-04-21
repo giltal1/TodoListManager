@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -36,16 +36,14 @@ public class ParseDB {
     }
 
     public void delete(Item item) {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("todo");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Todo");
         query.whereEqualTo("title", item.getTitle());
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> todoList, ParseException e) {
-                if (e == null) {
-                    for (ParseObject object : todoList) {
-                        object.deleteInBackground();
-                    }
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            public void done(ParseObject object, ParseException e) {
+                if (object == null) {
+                    Log.e("ParseDB", "Find item to delete failed");
                 } else {
-                    Log.e("ParseDB", "Find item to delete failed. " + e.getMessage());
+                    object.deleteInBackground();
                 }
             }
         });

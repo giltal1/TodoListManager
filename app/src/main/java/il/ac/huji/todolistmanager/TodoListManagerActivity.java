@@ -26,7 +26,11 @@ public class TodoListManagerActivity extends ActionBarActivity {
     private final String SMS = "smsto:";
     private final String MAIL = "mailto:";
 
-    final Context context = this;
+    private String callPrefix = null;
+    private String messagePrefix = null;
+    private String mailPrefix = null;
+
+    private final Context context = this;
     private ItemDataSource dataSource;
     private List<Item> items;
     private ArrayAdapter<Item> adapter;
@@ -37,6 +41,10 @@ public class TodoListManagerActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list_manager);
+
+        callPrefix = getResources().getString(R.string.menu_call);
+        messagePrefix = getResources().getString(R.string.menu_message);
+        mailPrefix = getResources().getString(R.string.menu_mail);
 
         //Init parse
         parse = new ParseDB(context);
@@ -65,10 +73,6 @@ public class TodoListManagerActivity extends ActionBarActivity {
         menu.setHeaderTitle(item.getTitle());
 
         //Choose which menu items to show
-        Resources res = getResources();
-        String callPrefix = res.getString(R.string.menu_call);
-        String messagePrefix = res.getString(R.string.menu_message);
-        String mailPrefix = res.getString(R.string.menu_mail);
         if (item.getTitle().startsWith(callPrefix)) {
             MenuItem callItem = menu.findItem(R.id.menuItemCall);
             callItem.setTitle(item.getTitle());
@@ -122,20 +126,21 @@ public class TodoListManagerActivity extends ActionBarActivity {
     }
 
     private boolean actionOnItem(String action, Item item) {
-        Resources res = getResources();
-        String actionPrefix = res.getString(R.string.menu_call);
-        String data = item.getTitle().substring(actionPrefix.length());
         Intent intent = null;
+        String data;
         switch (action) {
             case CALL:
+                data = item.getTitle().substring(callPrefix.length());
                 intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse(CALL + data));
                 break;
             case SMS:
+                data = item.getTitle().substring(messagePrefix.length());
                 intent = new Intent(Intent.ACTION_SEND);
                 intent.setData(Uri.parse(SMS + data));
                 break;
             case MAIL:
+                data = item.getTitle().substring(mailPrefix.length());
                 intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse(MAIL + data));
                 break;
@@ -183,7 +188,7 @@ public class TodoListManagerActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        super.onPause();
+        super.onDestroy();
         dataSource.close();
     }
 

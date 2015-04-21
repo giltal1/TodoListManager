@@ -51,26 +51,6 @@ public class ItemDataSource {
                 new String[] { item.getTitle() });
     }
 
-    // Getting single item
-//    public Item getItem(int id) {
-//        Cursor cursor = db.query(MySQLiteHelper.TABLE_NAME, allColumns,
-//                MySQLiteHelper.KEY_ID + " = " + id, null, null, null, null);
-//        cursor.moveToFirst();
-//        String title = cursor.getString(1);
-//        Date date = null;
-//        String dateAsString = !cursor.isNull(2) ? cursor.getString(2) : null;
-//        DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
-//        try {
-//            date = formatter.parse(dateAsString);
-//        }
-//        catch (ParseException e) {
-//            Log.e("ItemDataSource", "can't convert string to date", e);
-//        }
-//        Item item = new Item(title, date);
-//        cursor.close();
-//        return item;
-//    }
-
     // Getting all items
     public List<Item> getAllItems() {
         List<Item> itemsList = new ArrayList<Item>();
@@ -83,7 +63,7 @@ public class ItemDataSource {
                 String title = cursor.getString(1);
                 Date date = null;
                 String dateAsString = !cursor.isNull(2) ? cursor.getString(2) : null;
-                DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+                DateFormat formatter = new SimpleDateFormat(FORMAT);
                 try {
                     date = formatter.parse(dateAsString);
                 }
